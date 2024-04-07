@@ -7,6 +7,10 @@ from denoiser import AudioDenoiser
 
 app = FastAPI()
 
+@app.get("/ready")
+async def ready():
+    return {"message": "Hello World!"}
+
 @app.post("/denoise", response_model=FileResponse)
 async def denoise_audio(file: UploadFile = File(...) ):
     denoiser = AudioDenoiser()
