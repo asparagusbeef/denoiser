@@ -11,6 +11,11 @@ app = FastAPI()
 async def ready():
     return {"message": "Hello World!"}
 
+@app.get("cuda_is_avaialble")
+async def cuda_is_avaialble():
+    import torch
+    return {"message": torch.cuda.is_available()}
+
 @app.post("/denoise", response_model=FileResponse)
 async def denoise_audio(file: UploadFile = File(...) ):
     denoiser = AudioDenoiser()
