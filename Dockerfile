@@ -21,12 +21,6 @@ COPY requirements.txt .
 RUN pip install --no-cache-dir torch --index-url https://download.pytorch.org/whl/cu118 && \
     pip install --no-cache-dir -r requirements.txt
 
-# Copy download_models.py into the container
-COPY download_models.py .
-
-# Run the download_models.py script
-RUN python download_models.py
-
 # Stage 2: Runtime Stage
 FROM nvidia/cuda:11.8.0-base-ubuntu22.04 as runtime-stage
 
