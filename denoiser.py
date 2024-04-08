@@ -43,6 +43,7 @@ class AudioDenoiser:
     async def reattach_chunks(self, file_paths: list[str]):
         print("Reattaching audio chunks")
         for i, file_path in enumerate(file_paths):
+            print(f"Reattaching chunk {i + 1}/{len(file_paths)}")
             if i == 0:
                 audio = AudioSegment.from_file_using_temporary_files(file_path)
             else:
