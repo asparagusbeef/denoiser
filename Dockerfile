@@ -31,7 +31,7 @@ ENV LOGGING_LEVEL=INFO
 # Install Python
 RUN apt-get update -y && \
     apt-get install -y python3.11 python3-distutils --no-install-recommends && \
-    apt-get install -y ffmpeg && \
+    apt-get install -y ffmpeg git && \
     rm -rf /var/lib/apt/lists/* && \
     ln -sf /usr/bin/python3.11 /usr/bin/python3
 
