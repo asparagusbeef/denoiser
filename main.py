@@ -16,7 +16,7 @@ async def cuda_is_avaialble():
     import torch
     return {"message": torch.cuda.is_available()}
 
-@app.post("/denoise", response_model=FileResponse)
+@app.post("/denoise")
 async def denoise_audio(file: UploadFile = File(...) ):
     denoiser = AudioDenoiser()
 

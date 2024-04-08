@@ -23,3 +23,4 @@ typing_extensions==4.11.0
 urllib3==2.2.1
 win32-setctime==1.1.0
 uvicorn==0.29.0
+python-multipart
