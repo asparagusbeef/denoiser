@@ -18,7 +18,7 @@ ENV PATH="/opt/venv/bin:$PATH"
 COPY requirements.txt .
 
 # Install PyTorch compatible with CUDA 11.8
-RUN pip install --no-cache-dir torch --index-url https://download.pytorch.org/whl/cu118 && \
+RUN pip install --no-cache-dir torch torchaudio --index-url https://download.pytorch.org/whl/cu118 && \
     pip install --no-cache-dir -r requirements.txt
 
 # Stage 2: Runtime Stage
@@ -31,6 +31,7 @@ ENV LOGGING_LEVEL=INFO
 # Install Python
 RUN apt-get update -y && \
     apt-get install -y python3.11 python3-distutils --no-install-recommends && \
+    apt-get install -y ffmpeg && \
     rm -rf /var/lib/apt/lists/* && \
     ln -sf /usr/bin/python3.11 /usr/bin/python3
 
@@ -47,4 +48,4 @@ ENV PATH="/opt/venv/bin:$PATH"
 COPY . .
 
 # Run your application
-CMD ["sh", "-c", "gunicorn -w 2 -k uvicorn.workers.UvicornWorker --log-level debug --access-logfile - --error-logfile - -b '[::]:8888' --timeout 600 main:app"]
+CMD ["sh", "-c", "uvicorn main:app --host '::' --port 8888 --log-level debug"]
