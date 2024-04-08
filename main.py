@@ -1,4 +1,5 @@
-from fastapi import FastAPI, File, UploadFile, BackgroundTasks
+from fastapi import FastAPI, File, UploadFile
+from starlette.background import BackgroundTask
 from fastapi.responses import FileResponse
 from tempfile import TemporaryDirectory, NamedTemporaryFile
 from pydub import AudioSegment
@@ -18,20 +19,7 @@ async def cuda_is_available():
     return {"message": torch.cuda.is_available()}
 
 @app.post("/denoise")
-async def denoise_audio(file: UploadFile = File(...) ):
-    denoiser = AudioDenoiser()
-
-    audio = AudioSegment.from_file_using_temporary_files(file.file)
-
-    with TemporaryDirectory() as temp_dir:
-        output_path = f"{temp_dir}/denoised_audio.mp3"
-
-        await denoiser.denoise_audio_file(audio, output_path)
-
-        return FileResponse(output_path)
-
-@app.post("/denoise")
-async def denoise_audio(background_tasks: BackgroundTasks, file: UploadFile = File(...)):
+async def denoise_audio(file: UploadFile = File(...)):
     denoiser = AudioDenoiser()
 
     audio = AudioSegment.from_file_using_temporary_files(file.file)
@@ -48,6 +36,6 @@ async def denoise_audio(background_tasks: BackgroundTasks, file: UploadFile = Fi
         unlink(path)
 
     # Add the cleanup task to run after sending the response
-    background_tasks.add_task(cleanup_file, output_path)
+    background_task = BackgroundTask(cleanup_file, output_path)
 
-    return FileResponse(output_path, filename="denoised_audio.mp3")
+    return FileResponse(output_path, filename="denoised_audio.mp3", background=background_task)
