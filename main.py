@@ -11,8 +11,8 @@ app = FastAPI()
 async def ready():
     return {"message": "Hello World!"}
 
-@app.get("cuda_is_avaialble")
-async def cuda_is_avaialble():
+@app.get("/cuda_is_available")
+async def cuda_is_available():
     import torch
     return {"message": torch.cuda.is_available()}
 
