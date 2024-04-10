@@ -1,13 +1,12 @@
 from df.enhance import enhance, init_df, load_audio, save_audio
 from pydub import AudioSegment
-from tempfile import TemporaryDirectory
 from os import path, makedirs
 
 class AudioDenoiser:
     def __init__(self):
-        self.model, self.df_state, _ = init_df()
+        self.model, self.df_state, _ = init_df(model_base_dir="model")
 
-    async def split_to_chunks(self, audio: AudioSegment, chunk_seconds: int = 120, output_dir: str = "chunks") -> list[str]:
+    def split_to_chunks(self, audio: AudioSegment, chunk_seconds: int = 120, output_dir: str = "chunks") -> list[str]:
         print("Splitting audio to chunks")
 
         if not path.exists(output_dir):
@@ -25,7 +24,7 @@ class AudioDenoiser:
 
         return file_paths
       
-    async def denoise(self, file_paths: list[str]):
+    def denoise(self, file_paths: list[str]):
         print("Denoising audio file")
 
         file_paths_wav = [file_path.rsplit(".", 1)[0] + ".wav" for file_path in file_paths]
@@ -40,7 +39,7 @@ class AudioDenoiser:
 
         return file_paths_wav
 
-    async def reattach_chunks(self, file_paths: list[str]):
+    def reattach_chunks(self, file_paths: list[str]):
         print("Reattaching audio chunks")
         for i, file_path in enumerate(file_paths):
             print(f"Reattaching chunk {i + 1}/{len(file_paths)}")
@@ -51,17 +50,17 @@ class AudioDenoiser:
 
         return audio
     
-    async def denoise_audio_file(self, audio: AudioSegment, output_path: str = "denoised_audio.mp3"):
+    def denoise_audio_file(self, audio: AudioSegment, output_path: str = "denoised_audio.wav"):
 
         output_dir = output_path.rsplit("/", 1)[0]
         if not path.exists(output_dir):
             makedirs(output_dir)
 
         print("Denoising audio file")
-        denoised_files = await self.denoise(await self.split_to_chunks(audio))
+        denoised_files = self.denoise(self.split_to_chunks(audio))
 
         print("Audio file denoised")
         print("Reattaching audio chunks")
-        denoised_audio = await self.reattach_chunks(denoised_files)
+        denoised_audio = self.reattach_chunks(denoised_files)
 
-        denoised_audio.export(output_path, format="mp3")
+        denoised_audio.export(output_path, format="wav")

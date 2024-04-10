@@ -33,7 +33,8 @@ RUN apt-get update -y && \
     apt-get install -y python3.11 python3-distutils --no-install-recommends && \
     apt-get install -y ffmpeg git && \
     rm -rf /var/lib/apt/lists/* && \
-    ln -sf /usr/bin/python3.11 /usr/bin/python3
+    ln -sf /usr/bin/python3.11 /usr/bin/python3 && \ 
+    git init
 
 # Set the working directory inside the container to /app
 WORKDIR /app
@@ -47,5 +48,5 @@ ENV PATH="/opt/venv/bin:$PATH"
 # Copy the entire project directory contents into the container at /app
 COPY . .
 
-# Run your application
+# Run your application:
 CMD ["sh", "-c", "uvicorn main:app --host '::' --port 8888 --log-level debug"]
