@@ -66,9 +66,8 @@ async def denoise_audio(file: UploadFile = File(...), denoiser: AudioDenoiser = 
     denoised_audio = process_audio()
 
     async def iterfile():
-        while chunk := denoised_audio.read(1024):
+        while chunk := denoised_audio.read(65536):
             yield chunk
-            await sleep(0.1)
 
     return StreamingResponse(
         iterfile(),
