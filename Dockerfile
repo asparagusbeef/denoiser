@@ -45,8 +45,12 @@ COPY --from=build-stage /opt/venv /opt/venv
 # Activate virtual environment
 ENV PATH="/opt/venv/bin:$PATH"
 
-# Copy the entire project directory contents into the container at /app
-COPY . .
+COPY . /app
 
-# Run your application:
-CMD ["sh", "-c", "uvicorn main:app --host '::' --port 8888 --log-level debug"]
+# Creates a non-root user with an explicit UID and adds permission to access the /app folder
+# For more info, please refer to https://aka.ms/vscode-docker-python-configure-containers
+RUN adduser -u 5678 --disabled-password --gecos "" appuser && chown -R appuser /app
+USER appuser
+
+# Run your application
+CMD ["uvicorn", "main:app", "--host", "::", "--port", "8888", "--log-level", "debug"]
