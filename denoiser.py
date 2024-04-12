@@ -1,7 +1,7 @@
 from df.enhance import enhance, init_df, load_audio, save_audio
 from pydub import AudioSegment
 from pydub.utils import make_chunks
-from os import path, makedirs
+from os import path, makedirs, environ
 from io import BytesIO
 from tempfile import TemporaryDirectory
 
@@ -9,7 +9,7 @@ class AudioDenoiser:
     def __init__(self):
         self.model, self.df_state, _ = init_df(model_base_dir="model")
 
-    def split_to_chunks(self, audio: AudioSegment, output_dir: str, chunk_seconds: int = 120) -> list[str]:
+    def split_to_chunks(self, audio: AudioSegment, output_dir: str, chunk_seconds: int) -> list[str]:
         print("Splitting audio to chunks")
         chunk_duration_ms = chunk_seconds * 1000
         chunks = make_chunks(audio, chunk_duration_ms)
@@ -51,7 +51,7 @@ class AudioDenoiser:
         print("Denoising audio file")
         with TemporaryDirectory() as temp_dir:
             print("Splitting audio to chunks")
-            audio_chunks = self.split_to_chunks(audio, temp_dir)
+            audio_chunks = self.split_to_chunks(audio, temp_dir, environ.get("CHUNK_SECONDS", 240))
 
             print("Denoising audio chunks")
             denoised_files = self.denoise(audio_chunks)
