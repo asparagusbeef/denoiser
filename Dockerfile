@@ -53,4 +53,4 @@ RUN adduser -u 5678 --disabled-password --gecos "" appuser && chown -R appuser /
 USER appuser
 
 # Run your application
-CMD ["uvicorn", "main:app", "--host", "::", "--port", "8888", "--log-level", "debug"]
+CMD ["uvicorn", "main:app", "--host", "::", "--port", "8888", "--log-level", "debug", "--timeout-keep-alive", "100"]
