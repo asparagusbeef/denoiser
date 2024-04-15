@@ -43,7 +43,7 @@ async def gpu_info(websocket: WebSocket):
     password = await websocket.receive_text()
 
     if password != environ['GPU_INFO_PASSWORD']:
-        raise WebSocketException(code=1008, detail="Invalid password")
+        raise WebSocketException(code=1008, reason="Invalid password")
 
     while True:
         try:
